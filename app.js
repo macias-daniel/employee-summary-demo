@@ -10,7 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-let keepAskingQuestions = true;
+const employeeArray = []
 
 //Questions for standard employee data
 const standardQuestions =  [
@@ -37,8 +37,6 @@ const standardQuestions =  [
     }
 ]
 
-
-
 //Manager specific questions
 const managerQuestions = [
     {
@@ -48,35 +46,29 @@ const managerQuestions = [
     }
 ]
 
-
-
 //Engineer specific questions
 const engineerQuestions = [
     {
         type: "input",
-        name: "github",
+        name: "answer",
         message: `What is this employees github?`
     }
 ]
-
-
 
 //Intern specific questions
 const internQuestions = [
     {
         type: "input",
-        name: "school",
+        name: "answer",
         message: `What is this employees school name?`
     }
 ]
-
-
 
 //Asking if you want to add more employees
 const addMoreEmployees = [
     {
         type: "list",
-        name: "more",
+        name: "yesNoAnswer",
         message: "Would you like to add more employees to the site?",
         choices: [ "Yes","No"]
     }
@@ -94,14 +86,21 @@ addEmployee = () => {
     
         //Asking employee type specific questions
         inquirer.prompt(questionRef[employeeType]).then( specificAnswers =>{
+
+            const typeRef = {"Manager": Manager, "Engineer": Engineer, "Intern": Intern}
+            
+            //Create correct employee object and push it to the employee array
+            employeeArray.push(new typeRef[standardAnswers.type](standardAnswers.name,  standardAnswers.id, standardAnswers.email, specificAnswers.answer))
     
             //Ask the user if they would like to add more employees if yes loop through everything again else return
-            inquirer.prompt(addMoreEmployees).then(answer =>{
-                if(answer.more === "Yes"){ 
+            inquirer.prompt(addMoreEmployees).then(response =>{
+                if(response.yesNoAnswer === "Yes"){ 
                     console.log("")
                     console.log("=========================================")
                     console.log("")
                     addEmployee()
+                }else{
+                    console.log(employeeArray)
                 }
             })
         })
