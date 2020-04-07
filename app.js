@@ -10,27 +10,29 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+let keepAskingQuestions = true;
+
 //Questions for standard employee data
 const standardQuestions =  [
     {
         type: "list",
-        name: "employeeType",
+        name: "type",
         message: "What kind of employee are you trying to add to the site?",
         choices: [ "Manager", "Engineer", "Intern" ]
     },
     {
         type: "input",
-        name: "employeeName",
+        name: "name",
         message: `What is this employee's name?`
     },
     {
         type: "input",
-        name: "employeeId",
+        name: "id",
         message: "What is this employee's id?"
     },
     {
         type: "input",
-        name: "employeeEmail",
+        name: "email",
         message: "What is this employee's email?"
     }
 ]
@@ -41,7 +43,7 @@ const standardQuestions =  [
 const managerQuestions = [
     {
         type: "input",
-        name: "employeeOffice",
+        name: "officeNumber",
         message: `What is this employees office number?`
     }
 ]
@@ -52,7 +54,7 @@ const managerQuestions = [
 const engineerQuestions = [
     {
         type: "input",
-        name: "employeeGithub",
+        name: "github",
         message: `What is this employees github?`
     }
 ]
@@ -63,7 +65,7 @@ const engineerQuestions = [
 const internQuestions = [
     {
         type: "input",
-        name: "employee",
+        name: "school",
         message: `What is this employees school name?`
     }
 ]
@@ -74,32 +76,41 @@ const internQuestions = [
 const addMoreEmployees = [
     {
         type: "list",
-        name: "moreEmployees",
+        name: "more",
         message: "Would you like to add more employees to the site?",
         choices: [ "Yes","No"]
     }
 ]
 
-
-inquirer.prompt(standardQuestions).then((standardAnswers)=> {
+//Will ask all the proper question to create an employee object
+addEmployee = () => {
+    inquirer.prompt(standardQuestions).then((standardAnswers)=> {
     
-    //Defines out what type of employee was selected
-    let employeeType = standardAnswers.employeeType.toLowerCase() + "Questions"
-
-    //String references to question variables defined above
-    const questionRef = {"managerQuestions": managerQuestions, "engineerQuestions": engineerQuestions, "internQuestions": internQuestions}
-
-    //Asking employee type specific questions
-    inquirer.prompt(questionRef[employeeType]).then( specificAnswers =>{
-
-
-        //Ask the user if they would like to add more employees if yes loop through everything again else return
-        inquirer.prompt(addMoreEmployees).then(addMoreAnswer =>{console.log(addMoreAnswer.moreEmployees)})
+        //Defines out what type of employee was selected
+        let employeeType = standardAnswers.type.toLowerCase() + "Questions"
+    
+        //String references to question variables defined above
+        const questionRef = {"managerQuestions": managerQuestions, "engineerQuestions": engineerQuestions, "internQuestions": internQuestions}
+    
+        //Asking employee type specific questions
+        inquirer.prompt(questionRef[employeeType]).then( specificAnswers =>{
+    
+            //Ask the user if they would like to add more employees if yes loop through everything again else return
+            inquirer.prompt(addMoreEmployees).then(answer =>{
+                if(answer.more === "Yes"){ 
+                    console.log("")
+                    console.log("=========================================")
+                    console.log("")
+                    addEmployee()
+                }
+            })
+        })
     })
-    
-})
+}
 
 
+
+addEmployee()
 
 
 
