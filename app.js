@@ -10,43 +10,97 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-//Write Intern Questions
-
-//Write Manager Questions
-
-//Write Engineers questions 
-
-const standardQuestions =  [{
+//Questions for standard employee data
+const standardQuestions =  [
+    {
         type: "list",
         name: "employeeType",
-        message: "What kind of employee are you trying to display?",
+        message: "What kind of employee are you trying to add to the site?",
         choices: [ "Manager", "Engineer", "Intern" ]
     },
     {
         type: "input",
         name: "employeeName",
-        message: `What is this employyes name?`
+        message: `What is this employee's name?`
     },
     {
         type: "input",
         name: "employeeId",
-        message: "What is this employees id?"
+        message: "What is this employee's id?"
     },
     {
         type: "input",
         name: "employeeEmail",
-        message: "What is this employees email?"
+        message: "What is this employee's email?"
     }
 ]
 
 
 
+//Manager specific questions
+const managerQuestions = [
+    {
+        type: "input",
+        name: "employeeOffice",
+        message: `What is this employees office number?`
+    }
+]
 
 
 
-inquirer.prompt(standardQuestions).then((answers)=> {
+//Engineer specific questions
+const engineerQuestions = [
+    {
+        type: "input",
+        name: "employeeGithub",
+        message: `What is this employees github?`
+    }
+]
 
+
+
+//Intern specific questions
+const internQuestions = [
+    {
+        type: "input",
+        name: "employee",
+        message: `What is this employees school name?`
+    }
+]
+
+
+
+//Asking if you want to add more employees
+const addMoreEmployees = [
+    {
+        type: "list",
+        name: "moreEmployees",
+        message: "Would you like to add more employees to the site?",
+        choices: [ "Yes","No"]
+    }
+]
+
+
+inquirer.prompt(standardQuestions).then((standardAnswers)=> {
+    
+    //Defines out what type of employee was selected
+    let employeeType = standardAnswers.employeeType.toLowerCase() + "Questions"
+
+    //String references to question variables defined above
+    const questionRef = {"managerQuestions": managerQuestions, "engineerQuestions": engineerQuestions, "internQuestions": internQuestions}
+
+    //Asking employee type specific questions
+    inquirer.prompt(questionRef[employeeType]).then( specificAnswers =>{
+
+
+        //Ask the user if they would like to add more employees if yes loop through everything again else return
+        inquirer.prompt(addMoreEmployees).then(addMoreAnswer =>{console.log(addMoreAnswer.moreEmployees)})
+    })
+    
 })
+
+
+
 
 
 // Write code to use inquirer to gather information about the development team members,
